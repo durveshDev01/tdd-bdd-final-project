@@ -104,7 +104,63 @@ def step_impl(context, element_name):
 # to get the element id of any button
 ##################################################################
 
-## UPDATE CODE HERE ##
+
+
+##################################################################
+# Button actions
+##################################################################
+
+@when('I press the "{button_name}" button')
+def step_impl(context, button_name):
+    """Press a button."""
+    button_id = button_name.lower() + '-btn'
+    button = WebDriverWait(context.driver, context.wait_seconds).until(
+        expected_conditions.element_to_be_clickable((By.ID, button_id))
+    )
+    button.click()
+
+
+##################################################################
+# Success message
+##################################################################
+
+@then('I should see the message "{message}"')
+def step_impl(context, message):
+    """Check the flash message."""
+    element = WebDriverWait(context.driver, context.wait_seconds).until(
+        expected_conditions.text_to_be_present_in_element(
+            (By.ID, 'flash_message'),
+            message
+        )
+    )
+    assert element
+
+
+##################################################################
+# Product search results
+##################################################################
+
+@then('I should see "{text_string}" in the results')
+def step_impl(context, text_string):
+    """Verify a product appears in search results."""
+    element = WebDriverWait(context.driver, context.wait_seconds).until(
+        expected_conditions.presence_of_element_located(
+            (By.ID, 'search_results')
+        )
+    )
+    assert text_string in element.text
+
+
+@then('I should not see "{text_string}" in the results')
+def step_impl(context, text_string):
+    """Verify a product does not appear in search results."""
+    element = WebDriverWait(context.driver, context.wait_seconds).until(
+        expected_conditions.presence_of_element_located(
+            (By.ID, 'search_results')
+        )
+    )
+    assert text_string not in element.text
+
 
 ##################################################################
 # This code works because of the following naming convention:
