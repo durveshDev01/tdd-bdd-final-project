@@ -5,17 +5,15 @@ echo "**************************************************"
 
 echo "*** Installing Python 3.9 and Virtual Environment"
 sudo apt-get update
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -y python3.9 python3.9-venv
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y python3.8 python3.8-venv
 
 echo "*** Making Python 3.9 the default..."
-sudo update-alternatives --remove-all python3
-sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.9 1
 
 echo "*** Checking the Python version..."
-python3 --version
+python3.8 --version
 
 echo "*** Creating a Python virtual environment"
-python3 -m venv ~/venv
+python3.8 -m venv ~/venv
 
 echo "*** Configuring the developer environment..."
 echo "# TDD/BDD Final Project additions" >> ~/.bashrc

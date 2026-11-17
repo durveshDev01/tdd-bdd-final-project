@@ -178,3 +178,79 @@ class TestProductRoutes(TestCase):
         data = response.get_json()
         # logging.debug("data = %s", data)
         return len(data)
+
+    def test_get_product_not_found(self):
+        """It should not Read a Product that does not exist"""
+
+        response = self.client.get(f"{BASE_URL}/0")
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_404_NOT_FOUND
+        )
+
+    def test_get_product(self):
+        """It should Read a Product"""
+        products = self._create_products(1)
+        test_product = products[0]
+
+        response = self.client.get(
+            f"{BASE_URL}/{test_product.id}"
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        data = response.get_json()
+        self.assertEqual(data, test_product.serialize())
+
+    def test_update_product(self):
+        """It should Update an existing Product"""
+
+        # Create a product
+        test_product = ProductFactory()
+
+        response = self.client.post(
+            BASE_URL,
+            json=test_product.serialize()
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_201_CREATED
+        )
+
+        # Update the product
+        new_product = response.get_json()
+        new_product["description"] = "unknown"
+
+        response = self.client.put(
+            f"{BASE_URL}/{new_product['id']}",
+            json=new_product
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK
+        )
+
+        updated_product = response.get_json()
+
+        self.assertEqual(
+            updated_product["description"],
+            "unknown"
+        )
+
+    def test_update_product_not_found(self):
+        """It should return 404 for a missing Product"""
+
+        product = ProductFactory()
+
+        response = self.client.put(
+            f"{BASE_URL}/0",
+            json=product.serialize()
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_404_NOT_FOUND
+        )
